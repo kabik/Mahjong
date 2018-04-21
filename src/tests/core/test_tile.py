@@ -55,7 +55,7 @@ class TestTile(unittest.TestCase):
                 (tile.Tile.CHN, 36),
             )
 
-    def test_tile(self):
+    def test_define(self):
         for t, n in (self.manzu + self.pinzu + self.souzu + self.winds + self.dragons):
             self.assertEqual(t.value, n)
 
