@@ -86,33 +86,39 @@ class Hand():
     def discard(self, index):
         self.main_hand[index] -= 1
 
-    def isOpen(self):
+    def is_open(self):
         for p in self.claimed_player:
             if p != self.id:
                 return True
         return False
 
+    def open_num(self):
+        return len(self.claimed_player)
 
 """
-len(l) = 37
+h is an instanse of Hand
 """
-def calc_shanten_seven(l):
+def calc_shanten_seven(h):
+    if h.open_num() > 0:
+        return 100
     seven = 6
-    for n in l:
+    for n in h.main_hand:
         if n >= 2:
             seven -= 1
     return seven
 
 
 """
-len(l) = 37
+h is an instanse of Hand
 """
-def calc_shanten_kokushi(l):
+def calc_shanten_kokushi(h):
+    if h.open_num() > 0:
+        return 100
     indexes = [1,9,11,19,21,29,30,31,32,33,34,35,36]
     kokushi = 13
     pair_counted = False
     for i in indexes:
-        n = l[i]
+        n = h.main_hand[i]
         if n == 0:
             continue
         elif n == 1:
@@ -125,44 +131,44 @@ def calc_shanten_kokushi(l):
     return kokushi
 
 """
-len(l) = 37
+h is an instanse of Hand
 """
-def calc_shanten_normal(l):
+def calc_shanten_normal(h):
     normal = 8
     head_indexes = []
     for i in range(0, 37):
-        if l[i] >= 2:
+        if h.main_hand[i] >= 2:
             head_indexes.append(i)
     for i in head_indexes:
-        h = copy.deepcopy(l)
-        h[i] -= 2
+        l = copy.deepcopy(h.main_hand)
+        l[i] -= 2
 
         # manzu
-        man_m, man_t = calc_mentsu_tatsu(h[0:10])
+        man_m, man_t = calc_mentsu_tatsu(l[0:10])
         # pinzu
-        pin_m, pin_t = calc_mentsu_tatsu(h[10:20])
+        pin_m, pin_t = calc_mentsu_tatsu(l[10:20])
         # souzu
-        sou_m, sou_t = calc_mentsu_tatsu(h[20:30])
+        sou_m, sou_t = calc_mentsu_tatsu(l[20:30])
         # honor
-        hon_m, hon_t = calc_mentsu_tatsu_honor(h[30:37])
+        hon_m, hon_t = calc_mentsu_tatsu_honor(l[30:37])
 
-        mentsu = man_m + pin_m + sou_m + hon_m
+        mentsu = man_m + pin_m + sou_m + hon_m + h.open_num()
         tatsu = min(man_t + pin_t + sou_t + hon_t, 4 - mentsu)
 
         s = 8 - mentsu * 2 - tatsu - 1
         if s < normal:
             normal = s
 
-    h = copy.deepcopy(l)
-    man_m, man_t = calc_mentsu_tatsu(h[0:10])
+    l = copy.deepcopy(h.main_hand)
+    man_m, man_t = calc_mentsu_tatsu(l[0:10])
     # pinzu
-    pin_m, pin_t = calc_mentsu_tatsu(h[10:20])
+    pin_m, pin_t = calc_mentsu_tatsu(l[10:20])
     # souzu
-    sou_m, sou_t = calc_mentsu_tatsu(h[20:30])
+    sou_m, sou_t = calc_mentsu_tatsu(l[20:30])
     # honor
-    hon_m, hon_t = calc_mentsu_tatsu_honor(h[30:37])
+    hon_m, hon_t = calc_mentsu_tatsu_honor(l[30:37])
 
-    mentsu = man_m + pin_m + sou_m + hon_m
+    mentsu = man_m + pin_m + sou_m + hon_m + h.open_num()
     tatsu = min(man_t + pin_t + sou_t + hon_t, 4 - mentsu)
 
     s = 8 - mentsu * 2 - tatsu
@@ -172,12 +178,12 @@ def calc_shanten_normal(l):
     return normal
 
 """
-len(l) = 37
+h is an instanse of Hand
 """
-def calc_shanten(l):
-    seven   = calc_shanten_seven(l)
-    kokushi = calc_shanten_kokushi(l)
-    normal  = calc_shanten_normal(l)
+def calc_shanten(h):
+    seven   = calc_shanten_seven(h)
+    kokushi = calc_shanten_kokushi(h)
+    normal  = calc_shanten_normal(h)
     return min(seven, kokushi, normal)
 
 """

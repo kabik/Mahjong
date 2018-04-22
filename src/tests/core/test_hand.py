@@ -129,13 +129,24 @@ class TestHand(unittest.TestCase):
         h.discard(1)
         self.assertEqual(h.main_hand[1], 0)
 
-    def test_isOpen(self):
+    def test_is_open(self):
         h = hand.Hand(0)
         h.claimed_player.append(0)
         h.claimed_player.append(0)
-        self.assertIs(h.isOpen(), False)
+        self.assertIs(h.is_open(), False)
         h.claimed_player.append(1)
-        self.assertIs(h.isOpen(), True)
+        self.assertIs(h.is_open(), True)
+
+    def test_open_num(self):
+        h = hand.Hand(0)
+        h.main_hand = [0,0,0,0,0,0,0,0,0,0,
+                       0,0,2,2,0,1,0,0,0,0,
+                       0,0,2,1,0,1,0,0,0,0,
+                       0,0,2,1,0,1,0]
+        self.assertEqual(h.open_num(), 0)
+        h.claim([12,12],12,1)
+        h.main_hand[15] -= 1
+        self.assertEqual(h.open_num(), 1)
 
     def test_calc_shanten_seven(self):
         h = hand.Hand(0)
@@ -143,12 +154,12 @@ class TestHand(unittest.TestCase):
                        0,0,2,2,0,1,0,0,0,0,
                        0,0,2,1,0,1,0,0,0,0,
                        0,0,2,1,0,1,0]
-        self.assertEqual(hand.calc_shanten_seven(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten_seven(h), 2)
         h.main_hand = [0,0,0,0,0,0,0,0,0,0,
                        0,0,2,2,0,0,0,0,0,0,
                        0,0,2,2,0,0,0,0,0,0,
                        0,0,2,2,2,0,0]
-        self.assertEqual(hand.calc_shanten_seven(h.main_hand), -1)
+        self.assertEqual(hand.calc_shanten_seven(h), -1)
 
     def test_calc_shanten_kokushi(self):
         h = hand.Hand(0)
@@ -156,12 +167,12 @@ class TestHand(unittest.TestCase):
                        0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        1,1,2,3,0,0,0]
-        self.assertEqual(hand.calc_shanten_kokushi(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten_kokushi(h), 2)
         h.main_hand = [0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        1,1,1,1,1,1,2]
-        self.assertEqual(hand.calc_shanten_kokushi(h.main_hand), -1)
+        self.assertEqual(hand.calc_shanten_kokushi(h), -1)
 
 
     def test_calc_shanten_normal(self):
@@ -170,37 +181,37 @@ class TestHand(unittest.TestCase):
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,0,0,0,0,0,1,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten_normal(h), 0)
         h.main_hand = [0,1,1,1,0,0,0,1,1,0,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,1,0,1,0,0,1,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten_normal(h), 1)
         h.main_hand = [0,1,1,1,0,0,0,1,1,0,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,0,0,0,0,0,1,1,1,
                        0,0,2,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten_normal(h), 0)
         h.main_hand = [0,1,1,0,1,1,0,0,0,0,
                        0,0,0,0,0,1,1,1,0,0,
                        0,1,1,1,0,1,1,0,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten_normal(h), 2)
         h.main_hand = [0,1,1,0,1,1,0,0,0,0,
                        0,0,0,0,0,1,1,1,0,0,
                        0,1,1,1,0,1,1,0,2,0,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten_normal(h), 1)
         h.main_hand = [0,0,0,0,0,0,0,0,0,0,
                        0,1,1,1,0,0,0,0,0,0,
                        0,0,0,1,3,1,1,1,0,0,
                        0,0,0,1,0,2,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten_normal(h), 1)
         h.main_hand = [0,3,1,1,1,1,1,1,1,3,
                        0,0,0,0,0,0,0,0,0,0,
                        0,0,0,0,0,0,0,0,0,0,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten_normal(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten_normal(h), 0)
 
     def test_calc_shanten(self):
         h = hand.Hand(0)
@@ -209,64 +220,86 @@ class TestHand(unittest.TestCase):
                        0,0,2,2,0,1,0,0,0,0,
                        0,0,2,1,0,1,0,0,0,0,
                        0,0,2,1,0,1,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten(h), 2)
         h.main_hand = [0,0,0,0,0,0,0,0,0,0,
                        0,0,2,2,0,0,0,0,0,0,
                        0,0,2,2,0,0,0,0,0,0,
                        0,0,2,2,2,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), -1)
+        self.assertEqual(hand.calc_shanten(h), -1)
         # kokushi
         h.main_hand = [0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        1,1,2,3,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten(h), 2)
         h.main_hand = [0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        0,1,0,0,0,0,0,0,0,1,
                        1,1,1,1,1,1,2]
-        self.assertEqual(hand.calc_shanten(h.main_hand), -1)
+        self.assertEqual(hand.calc_shanten(h), -1)
         # normal
         h.main_hand = [0,1,1,1,0,0,0,0,2,2,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,0,0,0,0,0,1,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten(h), 0)
         h.main_hand = [0,1,1,1,0,0,0,1,1,0,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,1,0,1,0,0,1,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten(h), 1)
         h.main_hand = [0,1,1,1,0,0,0,1,1,0,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,0,0,0,0,0,1,1,1,
                        0,0,2,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten(h), 0)
         h.main_hand = [0,1,1,0,1,1,0,0,0,0,
                        0,0,0,0,0,1,1,1,0,0,
                        0,1,1,1,0,1,1,0,1,1,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 2)
+        self.assertEqual(hand.calc_shanten(h), 2)
         h.main_hand = [0,1,1,0,1,1,0,0,0,0,
                        0,0,0,0,0,1,1,1,0,0,
                        0,1,1,1,0,1,1,0,2,0,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten(h), 1)
         h.main_hand = [0,0,0,0,0,0,0,0,0,0,
                        0,1,1,1,0,0,0,0,0,0,
                        0,0,0,1,3,1,1,1,0,0,
                        0,0,0,1,0,2,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 1)
+        self.assertEqual(hand.calc_shanten(h), 1)
         h.main_hand = [0,3,1,1,1,1,1,1,1,3,
                        0,0,0,0,0,0,0,0,0,0,
                        0,0,0,0,0,0,0,0,0,0,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten(h), 0)
         h.main_hand = [0,3,0,0,3,0,3,0,0,0,
                        0,0,0,0,0,0,3,0,0,0,
                        0,0,0,1,0,0,0,0,0,0,
                        0,0,0,0,0,0,0]
-        self.assertEqual(hand.calc_shanten(h.main_hand), 0)
+        self.assertEqual(hand.calc_shanten(h), 0)
+        # pong
+        h2 = hand.Hand(0)
+        h2.main_hand = [0,3,0,0,3,0,3,0,0,0,
+                       0,0,0,0,0,0,2,0,0,0,
+                       0,0,0,1,0,0,0,0,0,0,
+                       0,0,0,0,0,0,0]
+        h2.claim([16,16], 16, 1)
+        self.assertEqual(hand.calc_shanten(h2), 0)
+        # daiminkan
+        h2.claim([1,1,1], 1, 2)
+        self.assertEqual(hand.calc_shanten(h2), 0)
+        # chow
+        h2 = hand.Hand(0)
+        h2.main_hand = [0,3,0,0,3,0,3,0,0,0,
+                       0,0,0,0,0,0,1,0,0,0,
+                       0,0,0,1,1,0,0,0,0,0,
+                       0,0,0,0,0,0,0]
+        h2.claim([23,24], 25, 1)
+        self.assertEqual(hand.calc_shanten(h2), 0)
+        h2.main_hand[16] = 2
+        self.assertEqual(hand.calc_shanten(h2), -1)
+
 
 if __name__ == '__main__':
     unittest.main()
