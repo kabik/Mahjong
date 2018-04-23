@@ -95,6 +95,23 @@ class Hand():
     def open_num(self):
         return len(self.claimed_player)
 
+    def to_string(self):
+        str = 'main:[ '
+        for i in range(0, len(self.main_hand)):
+            n = self.main_hand[i]
+            for j in range(0,n):
+                t = tile.Tile(i)
+                str += t.get_char() + ' '
+        str += '], open:['
+        for i in range(0, self.open_num()):
+            str += '[ '
+            for j in self.open_sets[i]:
+                t = tile.Tile(j)
+                str += t.get_char() + ' '
+            str = str + ' ](' + tile.Tile(self.claimed_tile[i]).get_char() + ')'
+        str += ']'
+        return str
+
 """
 h is an instanse of Hand
 """
@@ -211,6 +228,8 @@ def calc_mentsu_tatsu(l):
     for i in range(0,9):
         if l[i] > 0 and l[i+1] > 0:
             t_candidate_indexes.append([i,i+1])
+        elif i < 8 and l[i] > 0 and l[i+2] > 0:
+            t_candidate_indexes.append([i,i+2])
 
     for indexes in m_candidate_indexes:
         l2 = copy.deepcopy(l)
