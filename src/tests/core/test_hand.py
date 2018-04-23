@@ -238,6 +238,11 @@ class TestHand(unittest.TestCase):
                        1,1,1,1,1,1,2]
         self.assertEqual(hand.calc_shanten(h), -1)
         # normal
+        h.main_hand = [0,0,1,2,1,1,0,2,0,0,
+                       0,0,2,0,0,0,0,1,0,1,
+                       0,0,0,0,0,0,0,0,0,0,
+                       0,1,0,0,1,0,0]
+        self.assertEqual(hand.calc_shanten(h), 2)
         h.main_hand = [0,1,1,1,0,0,0,0,2,2,
                        0,0,0,0,1,1,1,0,0,0,
                        0,0,0,0,0,0,0,1,1,1,

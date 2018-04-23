@@ -138,5 +138,18 @@ class TestTile(unittest.TestCase):
         self.assertIs(tile.Tile.HAT.is_terminal_or_honor(), True)
         self.assertIs(tile.Tile.CHN.is_terminal_or_honor(), True)
 
+    def test_dora_index_by_display_index(self):
+        for i in range(0,3):
+            for j in range(1,9):
+                self.assertEqual(tile.dora_index_by_display_index(i*10+j), i*10+j+1)
+            self.assertEqual(tile.dora_index_by_display_index(i*10+9), i*10+1)
+        self.assertEqual(tile.dora_index_by_display_index(30), 31)
+        self.assertEqual(tile.dora_index_by_display_index(31), 32)
+        self.assertEqual(tile.dora_index_by_display_index(32), 33)
+        self.assertEqual(tile.dora_index_by_display_index(33), 30)
+        self.assertEqual(tile.dora_index_by_display_index(34), 35)
+        self.assertEqual(tile.dora_index_by_display_index(35), 36)
+        self.assertEqual(tile.dora_index_by_display_index(36), 34)
+
 if __name__ == '__main__':
     unittest.main()

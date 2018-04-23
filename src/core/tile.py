@@ -1,5 +1,15 @@
 from enum import IntEnum
 
+characters = ['?','🀇','🀈','🀉','🀊','🀋','🀌','🀍','🀎','🀏',
+              '?','🀙','🀚','🀛','🀜','🀝','🀞','🀟','🀠','🀡',
+              '?','🀐','🀑','🀒','🀓','🀔','🀕','🀖','🀗','🀘',
+              '🀀','🀁','🀂','🀃','🀆','🀅','🀄']
+
+dora_table = [6 , 2, 3, 4, 5, 6, 7, 8, 9, 1,
+              16,12,13,14,15,16,17,18,19,11,
+              26,22,23,24,25,26,27,28,29,21,
+              31,32,33,30,35,36,34]
+
 class Tile(IntEnum):
     """
     Manzu (Characters in English)
@@ -84,3 +94,9 @@ class Tile(IntEnum):
 
     def is_terminal_or_honor(self):
         return self.is_honor() or self.is_terminal()
+
+    def get_char(self):
+        return characters[self.value]
+
+def dora_index_by_display_index(index):
+    return dora_table[index]
