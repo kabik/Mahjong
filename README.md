@@ -3,7 +3,7 @@
 Mahjong for Japanese rule
 
 ## Requirement
-* Python 3.4 or newer
+* Python 3.7 or newer
 
 ## Usage
 
