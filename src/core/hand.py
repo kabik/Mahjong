@@ -2,9 +2,9 @@ import copy
 
 from src.core import tile
 
-empty_tile_set = [0,0,0,0,0,0,0,0,0,0,
-                  0,0,0,0,0,0,0,0,0,0,
-                  0,0,0,0,0,0,0,0,0,0,
+empty_tile_set = [0,0,0,0,0,0,0,0,0,0,  # Manzu
+                  0,0,0,0,0,0,0,0,0,0,  # Pinzu
+                  0,0,0,0,0,0,0,0,0,0,  # Souzu
                   0,0,0,0,0,0,0]
 
 class Hand():
